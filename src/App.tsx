@@ -1,6 +1,7 @@
 import { HashRouter, Routes, Route } from 'react-router-dom';
 import { IPTVProvider, useIPTV } from './context/IPTVContext';
 import Header from './components/Header';
+import BottomNav from './components/BottomNav';
 import Home from './pages/Home';
 import Browse from './pages/Browse';
 import Loading from './pages/Loading';
@@ -13,7 +14,7 @@ function AppRoutes() {
   if (error) return <ErrorPage message={error} />;
 
   return (
-    <div className="min-h-screen bg-[#0a0a0f]">
+    <div className="min-h-screen bg-[#08080e]">
       <Header />
       <main>
         <Routes>
@@ -24,6 +25,7 @@ function AppRoutes() {
           <Route path="/genre/:id" element={<Browse mode="category" />} />
         </Routes>
       </main>
+      <BottomNav />
     </div>
   );
 }
