@@ -18,7 +18,6 @@ export default function VideoPlayer({ url, title }: Props) {
 
     setStatus('loading');
     setErrorMsg('');
-
     hlsRef.current?.destroy();
     hlsRef.current = null;
 
@@ -28,11 +27,7 @@ export default function VideoPlayer({ url, title }: Props) {
     };
 
     if (Hls.isSupported()) {
-      const hls = new Hls({
-        enableWorker: true,
-        lowLatencyMode: true,
-        debug: false,
-      });
+      const hls = new Hls({ enableWorker: true, lowLatencyMode: true, debug: false });
       hlsRef.current = hls;
 
       hls.on(Hls.Events.MANIFEST_PARSED, () => {
@@ -41,20 +36,15 @@ export default function VideoPlayer({ url, title }: Props) {
       });
 
       hls.on(Hls.Events.ERROR, (_, data) => {
-        if (data.fatal) {
-          onError('Unable to load this stream. It may be offline or geo-restricted.');
-        }
+        if (data.fatal) onError('خطا در بارگذاری پخش. این کانال ممکن است آفلاین یا محدود باشد.');
       });
 
       hls.loadSource(url);
       hls.attachMedia(video);
     } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
       video.src = url;
-      const onLoaded = () => {
-        setStatus('playing');
-        video.play().catch(() => {});
-      };
-      const onErr = () => onError('Stream failed to load.');
+      const onLoaded = () => { setStatus('playing'); video.play().catch(() => {}); };
+      const onErr = () => onError('خطا در بارگذاری پخش.');
       video.addEventListener('loadedmetadata', onLoaded, { once: true });
       video.addEventListener('error', onErr, { once: true });
       return () => {
@@ -62,13 +52,10 @@ export default function VideoPlayer({ url, title }: Props) {
         video.removeEventListener('error', onErr);
       };
     } else {
-      onError('Your browser does not support HLS streaming.');
+      onError('مرورگر شما از پخش HLS پشتیبانی نمی‌کند.');
     }
 
-    return () => {
-      hlsRef.current?.destroy();
-      hlsRef.current = null;
-    };
+    return () => { hlsRef.current?.destroy(); hlsRef.current = null; };
   }, [url]);
 
   return (
@@ -76,32 +63,26 @@ export default function VideoPlayer({ url, title }: Props) {
       {status === 'loading' && (
         <div className="absolute inset-0 flex flex-col items-center justify-center bg-zinc-950 gap-3">
           <div className="w-10 h-10 border-2 border-violet-500 border-t-transparent rounded-full animate-spin" />
-          <p className="text-zinc-400 text-sm">Connecting to stream…</p>
+          <p className="text-zinc-400 text-sm">در حال اتصال به پخش…</p>
         </div>
       )}
 
       {status === 'error' && (
         <div className="absolute inset-0 flex flex-col items-center justify-center bg-zinc-950 gap-4 p-6">
           <div className="text-5xl">📡</div>
-          <p className="text-zinc-300 text-sm text-center max-w-xs">{errorMsg}</p>
+          <p className="text-zinc-300 text-sm text-center max-w-xs leading-relaxed">{errorMsg}</p>
           <a
             href={url}
             target="_blank"
             rel="noopener noreferrer"
             className="text-violet-400 hover:text-violet-300 text-xs underline underline-offset-2"
           >
-            Try opening stream directly ↗
+            باز کردن مستقیم پخش ↗
           </a>
         </div>
       )}
 
-      <video
-        ref={videoRef}
-        controls
-        className="w-full h-full"
-        playsInline
-        aria-label={title}
-      />
+      <video ref={videoRef} controls className="w-full h-full" playsInline aria-label={title} />
     </div>
   );
 }
