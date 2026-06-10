@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { HashRouter, Routes, Route } from 'react-router-dom';
 import { IPTVProvider, useIPTV } from './context/IPTVContext';
 import Header from './components/Header';
 import Home from './pages/Home';
@@ -30,10 +30,10 @@ function AppRoutes() {
 
 export default function App() {
   return (
-    <BrowserRouter>
+    <HashRouter>
       <IPTVProvider>
         <AppRoutes />
       </IPTVProvider>
-    </BrowserRouter>
+    </HashRouter>
   );
 }
